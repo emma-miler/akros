@@ -1,0 +1,66 @@
+  akr_scrbuf_t* buffer = Graphics->Screen->Create(gop, &ctx, &dst);
+  akr_scrbuf_t* textbuffer = Graphics->Screen->Create(gop, &ctx, &dst);
+
+  // Set up font for rendering
+  ssfn_font_t* font = akr_font_load("font.sfn", &ctx);
+
+  ssfn_select(buffer->ssfn_ctx, SSFN_FAMILY_ANY, NULL, SSFN_STYLE_REGULAR | SSFN_STYLE_NOCACHE | SSFN_STYLE_NOAA, 16);
+  int max_height = buffer->height / font->height;
+  int max_width = (buffer->width / font->width) * 2;
+
+  char* line = malloc(sizeof(char) * max_width);
+  for (int i = 0; i < max_width; i++)
+  {
+    line[i] = '0' + i%42;
+  }
+  line[max_width - 1] = '!';
+
+  Graphics->Screen->Clear(textbuffer);
+  for (int z = 0; z < max_height; z++)
+  {
+    Graphics->Screen->DrawTextN(buffer, 0, font->baseline + font->height*z + 4, line, max_width);
+  }
+
+  int t = 11;
+  int growDirection = 5;
+  char fps[9];
+  char testvar[64];
+
+  time_t result;
+  time_t prev_result;
+  result = time(NULL);
+  prev_result = result;
+
+  int frames_since_last_second = 0;
+
+  while (1)
+  {
+    frames_since_last_second++;
+    if (t > buffer->height || t < 3)
+    {
+      growDirection = growDirection * -1;
+    }
+    t += growDirection;
+    Graphics->Screen->Clear(buffer);
+    Graphics->Screen->DrawRect(buffer, 0, 0, t, t, 0xFFFF0000);
+    Graphics->Screen->DrawRect(buffer, t, 0, buffer->width, t, 0xFF00FF00 );
+    Graphics->Screen->DrawRect(buffer, 0, t, t, buffer->height, 0xFF0000FF);
+    Graphics->Screen->DrawRect(buffer, t, t, buffer->width, buffer->height, 0xFF000000);
+    result = time(NULL);
+    if (result != prev_result)
+    {
+      sprintf(fps, "FPS: %d", frames_since_last_second);
+      frames_since_last_second = 0;
+    }
+    prev_result = result;
+
+    sprintf(testvar, "Test Var: %llu", buffer->width);
+
+    Graphics->Screen->DrawRect(textbuffer, 40, 20, 110, 70, 0x00000000);
+    //Graphics->Screen->Clear(textbuffer);
+    Graphics->Screen->DrawText(textbuffer, 50, 50, fps);
+    //Graphics->Screen->DrawText(textbuffer, 50, 70, testvar);
+
+    Graphics->Screen->Overlay(buffer, textbuffer, 0, 0);
+    Graphics->Screen->Activate(buffer);
+  }
