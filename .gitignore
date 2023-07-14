@@ -57,3 +57,7 @@ dkms.conf
 
 # VM
 *.fd
+
+# POSIX-UEFI library files
+!libuefi.a
+!crt*.o
