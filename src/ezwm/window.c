@@ -12,10 +12,3 @@ ezwm_window_t* ezwm_window_Create(rect_t rect, char* title)
 
     return window;
 }
-
-ezwm_window_singleton_t* ezwm_window_singleton_init()
-{
-    ezwm_window_singleton_t* window = malloc(sizeof(ezwm_window_singleton_t));
-    IMPL(ezwm, window, Create)
-    return window;
-}

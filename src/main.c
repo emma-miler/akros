@@ -7,7 +7,9 @@
 #include "graphics/graphics.h"
 #include "graphics/buffer.h"
 #include "graphics/font.h"
+#include "graphics/primitives.h"
 #include "ezwm/ezwm.h"
+#include "display/ads.h"
 
 ssfn_buf_t dst = {0};           /* framebuffer properties */
 ssfn_t ctx = {0};
@@ -17,47 +19,60 @@ uint32_t colors[4] = {0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF};
 
 int main (int argc, char **argv)
 {
-  akr_init_graphics();
-  ezwm_init();
-  int x = 0, y = 0;
-  efi_gop_t* gop = Graphics->GetGop();
-  if (gop == NULL) { printf("Error getting GOP"); exit(1); };
-  Graphics->SetMode(gop);
 
-  akr_scrbuf_t* buf = Graphics->Screen->Create(gop, &ctx, &dst, gop->Mode->Information->HorizontalResolution, gop->Mode->Information->VerticalResolution);
+
+  int x = 0, y = 0;
+  efi_gop_t* gop = akr_graphics_GetGop();
+  if (gop == NULL) { printf("Error getting GOP"); exit(1); };
+  akr_graphics_SetMode(gop);
+
+  scrbuf_t* buf = scrbuf_Create(gop, &ctx, &dst, gop->Mode->Information->HorizontalResolution, gop->Mode->Information->VerticalResolution);
+  scrbuf_t* temp_buf = scrbuf_Create(gop, &ctx, &dst, gop->Mode->Information->HorizontalResolution, gop->Mode->Information->VerticalResolution);
 
   ssfn_font_t* font = akr_font_load("font.sfn", &ctx);
 
   ssfn_select(buf->ssfn_ctx, SSFN_FAMILY_ANY, NULL, SSFN_STYLE_REGULAR | SSFN_STYLE_NOCACHE | SSFN_STYLE_NOAA, 16);
 
-  for (int i = 0; i < 4; i++)
+  ads_session_t* session = ads_create_session(buf, temp_buf);
+
+
+  // Window mask
+  rect_t* mask = malloc(sizeof(rect_t));
+  mask->x = 0;
+  mask->y = 0;
+  mask->width = 300;
+  mask->height = 200;
+
+  int t = 0;
+  int direction = 1;
+  while (1)
   {
-    rect_t rect;
-    rect.width = 100;
-    rect.height = 100;
-    rect.x = 120 * i + 20;
-    rect.y = 50 * i + 50;
-    char* title = "test x";
-    title[5] = i + 65;
-    ezwm_window_t* window = EZWM->Window->Create(rect, title);
-    windows[i] = window;
+    t += direction;
+    if (t > 400 || t < 1)
+    {
+      direction = -direction;
+    }
 
+    // Background drawcall
+    primitive_t primitive_bg;
+    primitive_bg.as_rect = graphics_create_rect(mask->x, mask->y, mask->width, mask->height);
+    ads_append_drawcall(session, akr_create_drawcall(primitive_bg, 0xFF303030));
+
+
+    // Rect drawcall
+    primitive_t primitive;
+    primitive.as_rect = graphics_create_rect(t,0,100,100);
+    drawcall_t call = akr_create_drawcall(primitive, 0xFFFF0000);
+    ads_append_drawcall(session, call);
+    scrbuf_Clear(temp_buf);
+    ads_process_drawcalls(session);
+
+
+    scrbuf_Clear(buf);
+    scrbuf_Copy(buf, temp_buf, mask);
+
+    scrbuf_Activate(buf);
   }
-
-
-  for (int i = 0; i < 4; i++)
-  {
-    rect_t* rect = &windows[i]->rect;
-    Graphics->Screen->DrawRect(buf, rect->x - 1, rect->y - 12, rect->x + rect->width, rect->y + 8, 0xFF444444);
-    Graphics->Screen->DrawText(buf, rect->x + 2, rect->y, windows[i]->title);
-    Graphics->Screen->DrawRect(buf, rect->x, rect->y + 4, rect->x + rect->width, rect->y + rect->height, colors[i]);
-  }
-
-  //Graphics->Screen->DrawRect(smallbuf, 0, 0, smallbuf->width, smallbuf->height, 0xFFFF0000);
-  //Graphics->Screen->Overlay(buf, smallbuf, 100, 100);
-  Graphics->Screen->Activate(buf);
-
-  //akr_scrbuf_activate(textbuffer);
   sleep(-1);
 
   return 0;
