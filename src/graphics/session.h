@@ -1,6 +1,6 @@
 #pragma once
-#include "../graphics/buffer.h"
-#include "../graphics/drawcall.h"
+#include "buffer.h"
+#include "drawcall.h"
 
 #define ADS_DRAWCALL_BUFFER_SIZE 128
 

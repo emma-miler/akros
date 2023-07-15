@@ -9,7 +9,7 @@
 #include "graphics/font.h"
 #include "graphics/primitives.h"
 #include "ezwm/ezwm.h"
-#include "display/ads.h"
+#include "graphics/session.h"
 
 ssfn_buf_t dst = {0};           /* framebuffer properties */
 ssfn_t ctx = {0};
@@ -36,6 +36,8 @@ int main (int argc, char **argv)
   ads_session_t* session = ads_create_session(buf, temp_buf);
 
   ezwm_window_t* window = ezwm_window_Create(new_rect_t(50,50,300,300), "test window");
+
+  //exit_bs();
 
 
   // Window mask

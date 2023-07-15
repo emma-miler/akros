@@ -2,7 +2,7 @@
 
 #include "../graphics/buffer.h"
 #include "../graphics/primitives.h"
-#include "../display/ads.h"
+#include "../graphics/session.h"
 
 struct ezwm_window_t;
 typedef struct {
