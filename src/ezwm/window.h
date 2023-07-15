@@ -2,6 +2,7 @@
 
 #include "../graphics/buffer.h"
 #include "../graphics/primitives.h"
+#include "../display/ads.h"
 
 struct ezwm_window_t;
 typedef struct {
@@ -10,3 +11,4 @@ typedef struct {
 } ezwm_window_t;
 
 ezwm_window_t* ezwm_window_Create(rect_t rect, char* title);
+void ezwm_window_draw_decorations(ezwm_window_t* window, ads_session_t* session);

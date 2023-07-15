@@ -35,13 +35,15 @@ int main (int argc, char **argv)
 
   ads_session_t* session = ads_create_session(buf, temp_buf);
 
+  ezwm_window_t* window = ezwm_window_Create(new_rect_t(50,50,300,300), "test window");
+
 
   // Window mask
   rect_t* mask = malloc(sizeof(rect_t));
-  mask->x = 0;
-  mask->y = 0;
-  mask->width = 300;
-  mask->height = 200;
+  mask->x = window->rect.x;
+  mask->y = window->rect.y - 20;
+  mask->width = window->rect.width;
+  mask->height = window->rect.height + 20;
 
   int t = 0;
   int direction = 1;
@@ -53,23 +55,27 @@ int main (int argc, char **argv)
       direction = -direction;
     }
 
-    // Background drawcall
-    primitive_t primitive_bg;
-    primitive_bg.as_rect = graphics_create_rect(mask->x, mask->y, mask->width, mask->height);
-    ads_append_drawcall(session, akr_create_drawcall(primitive_bg, 0xFF303030));
+    ezwm_window_draw_decorations(window, session);
 
+    // Background drawcall
+    ads_append_drawcall(session, drawcall_from_rect(window->rect, 0xFF303030));
 
     // Rect drawcall
-    primitive_t primitive;
-    primitive.as_rect = graphics_create_rect(t,0,100,100);
-    drawcall_t call = akr_create_drawcall(primitive, 0xFFFF0000);
+    rect_t rect;
+    rect.x = t + 50;
+    rect.y = 50;
+    rect.width = 100;
+    rect.height = 100;
+    drawcall_t call = drawcall_from_rect(rect, 0xFFFF0000);
     ads_append_drawcall(session, call);
-    scrbuf_Clear(temp_buf);
-    ads_process_drawcalls(session);
 
+    scrbuf_Clear(temp_buf);
+
+    ads_process_drawcalls(session);
 
     scrbuf_Clear(buf);
     scrbuf_Copy(buf, temp_buf, mask);
+
 
     scrbuf_Activate(buf);
   }

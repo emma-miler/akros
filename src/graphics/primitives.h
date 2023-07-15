@@ -1,64 +1,63 @@
 #pragma once
 
 #include "../uefi/uefi.h"
-
-typedef struct
-{
-    char type;
-} primitive_base_t;
+#include "../libs/ssfn.h"
 
 typedef enum
 {
-    PRIMITIVE_POINTD = 1,
-    PRIMITIVE_RECT = 2,
-    PRIMITIVE_LINE= 3,
-    PRIMITIVE_TRI = 4,
+    PRIMITIVE_TEXT = 0,
+    PRIMITIVE_POINT = 1,
+    PRIMITIVE_LINE = 2,
+    PRIMITIVE_TRI= 3,
+    PRIMITIVE_RECT = 4,
 } primitive_type_t;
 
 typedef struct
 {
-    char type;
     double x;
     double y;
-} pointd_t;
-pointd_t graphics_create_pointd(double x, double y);
+    char* text;
+} label_t;
+label_t new_label_t(double x, double y, char* text);
 
 
 typedef struct
 {
-    char type;
-    double width;
-    double height;
     double x;
     double y;
-} rect_t;
-rect_t graphics_create_rect(double x, double y, double width, double height);
+} point_t;
+point_t new_point_t(double x, double y);
 
 typedef struct
 {
-    char type;
     double x1;
     double y1;
     double x2;
     double y2;
 } line_t;
-line_t graphics_create_line(double x1, double y1, double x2, double y2);
 
-// WARNING: this is a variable-sized struct
 typedef struct
 {
-    char type;
-    pointd_t p1;
-    pointd_t p2;
-    pointd_t p3;
+    point_t p1;
+    point_t p2;
+    point_t p3;
 } tri_t;
-tri_t graphics_create_tri(pointd_t* p1, pointd_t* p2, pointd_t* p3);
+
+typedef struct
+{
+    double x;
+    double y;
+    double width;
+    double height;
+    char isFilled;
+} rect_t;
+rect_t new_rect_t(double x, double y, double width, double height);
 
 
 typedef union
 {
-    primitive_base_t base;
-    pointd_t as_point;
+    label_t as_label;
+    point_t as_point;
     line_t as_line;
     rect_t as_rect;
     tri_t as_tri;
