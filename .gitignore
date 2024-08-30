@@ -61,3 +61,6 @@ dkms.conf
 # POSIX-UEFI library files
 !libuefi.a
 !crt*.o
+
+build
+.vscode
