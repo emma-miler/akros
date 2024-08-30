@@ -1,2 +1,0 @@
-sleep 1
-vncviewer localhost:5900
