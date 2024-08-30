@@ -3,15 +3,15 @@
 #include "clib.h"
 #include "efi.h"
 
-void debug(EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* out, const char* fmt, va_list args)
+void debug(EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* out, const uchar* fmt, va_list args)
 {
-    uint16_t msg[512];
+    uchar msg[512];
 
     vsnprintf(msg, sizeof(msg), fmt, args);
     out->OutputString(out, msg);
 }
 
-void info(EFI_SYSTEM_TABLE* system, const char* fmt, ...)
+void info(EFI_SYSTEM_TABLE* system, const uchar* fmt, ...)
 {
     va_list args;
 
@@ -20,7 +20,7 @@ void info(EFI_SYSTEM_TABLE* system, const char* fmt, ...)
     va_end(args);
 }
 
-void err(EFI_SYSTEM_TABLE* system, const char* fmt, ...)
+void err(EFI_SYSTEM_TABLE* system, const uchar* fmt, ...)
 {
     va_list args;
 
@@ -29,7 +29,7 @@ void err(EFI_SYSTEM_TABLE* system, const char* fmt, ...)
     va_end(args);
 }
 
-void log_panic(EFI_SYSTEM_TABLE* system, const char* fmt, ...)
+void log_panic(EFI_SYSTEM_TABLE* system, const uchar* fmt, ...)
 {
     va_list args;
 

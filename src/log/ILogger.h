@@ -2,5 +2,5 @@
 
 class ILogger {
   public:
-    virtual void Info(const char* msg, ...) = 0;
+    virtual void Info(const uchar* msg, ...) = 0;
 };

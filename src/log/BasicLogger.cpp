@@ -4,9 +4,9 @@
 
 BasicLogger::BasicLogger(IOutputDevice& dev) : _sink(dev) {}
 
-void BasicLogger::Info(const char* msg, ...)
+void BasicLogger::Info(const uchar* msg, ...)
 {
-    uint16_t buf[512];
+    uchar buf[512];
     va_list args;
     va_start(args, msg);
     vsnprintf(buf, sizeof(buf), msg, args);

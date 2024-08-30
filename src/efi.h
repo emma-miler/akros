@@ -162,8 +162,7 @@ typedef struct EFI_TABLE_HEADER {
 #include "efi/boot.h"
 #include "efi/config.h"
 #include "efi/status.h"
-#include "efi/textinput.h"
-#include "efi/textoutput.h"
+#include "efi/text.h"
 
 typedef struct EFI_RUNTIME_SERVICES {
     EFI_TABLE_HEADER Hdr;

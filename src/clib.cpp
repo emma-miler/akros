@@ -65,7 +65,7 @@ template <typename T> class Buffer {
         ++count;
     }
     
-    void copy(const char* begin, const char* end)
+    void copy(const uchar* begin, const uchar* end)
     {
         const size_t len = end - begin;
         const size_t rem = count < size ? size - count : 0;
@@ -79,8 +79,8 @@ template <typename T> class Buffer {
 
     void format_unsigned(struct format* config, unsigned long long v)
     {
-        char buf[32];
-        char* pos = buf;
+        uchar buf[32];
+        uchar* pos = buf;
 
         do {
             const unsigned d = v % config->base;
@@ -93,8 +93,8 @@ template <typename T> class Buffer {
             ++pos;
         } while (v);
 
-        for (char *l = buf, *r = pos - 1; l < r; ++l, --r) {
-            const char c = *l;
+        for (uchar *l = buf, *r = pos - 1; l < r; ++l, --r) {
+            const uchar c = *l;
 
             *l = *r;
             *r = c;
@@ -113,7 +113,7 @@ template <typename T> class Buffer {
     }
 };
 
-static const char* format_parse_flags(const char* str, struct format* config)
+static const uchar* format_parse_flags(const uchar* str, struct format* config)
 {
     while (*str) {
         bool is_flag = true;
@@ -146,7 +146,7 @@ static const char* format_parse_flags(const char* str, struct format* config)
     return str;
 }
 
-static const char* format_parse_width(const char* str, struct format* config)
+static const uchar* format_parse_width(const uchar* str, struct format* config)
 {
     if (*str == '*') {
         config->width_from_args = true;
@@ -161,7 +161,7 @@ static const char* format_parse_width(const char* str, struct format* config)
     return str;
 }
 
-static const char* format_parse_type_width(const char* str, struct format* config)
+static const uchar* format_parse_type_width(const uchar* str, struct format* config)
 {
     if (*str == 'z') {
         config->type_width = FMT_TYPE_SIZE;
@@ -239,9 +239,9 @@ static enum format_type format_adjusted_type(enum format_type type, enum format_
     return type;
 }
 
-static const char* format_parse_spec(const char* str, struct format* config)
+static const uchar* format_parse_spec(const uchar* str, struct format* config)
 {
-    const char* pos = str;
+    const uchar* pos = str;
 
     if (*pos == '%') {
         config->type = FMT_PERCENT;
@@ -296,10 +296,10 @@ static const char* format_parse_spec(const char* str, struct format* config)
     return pos + 1;
 }
 
-static int format_parse(const char* str, struct format* config)
+static int format_parse(const uchar* str, struct format* config)
 {
-    const char* pos = str;
-    const char* end;
+    const uchar* pos = str;
+    const uchar* end;
 
     config->flags = 0;
     config->width_from_args = false;
@@ -320,15 +320,16 @@ static int format_parse(const char* str, struct format* config)
 
     return 0;
 }
+#include "log.h"
 
-int vsnprintf(uint16_t* writebuffer, size_t size, const char* fmt, va_list args)
+int vsnprintf(uchar* writebuffer, size_t size, const uchar* fmt, va_list args)
 {
-    Buffer<uint16_t> buf = Buffer<uint16_t>(writebuffer, size - 1, 0);
-    const char* current = fmt;
+    Buffer<uchar> buf = Buffer<uchar>(writebuffer, size - 1, 0);
+    const uchar* current = fmt;
 
     while (*current) {
-        const char* start = current;
-        const char* end = current;
+        const uchar* start = current;
+        const uchar* end = current;
 
         struct format config;
         unsigned long long uv;
@@ -354,15 +355,13 @@ int vsnprintf(uint16_t* writebuffer, size_t size, const char* fmt, va_list args)
 
         switch (config.type) {
         case FMT_STR: {
-            const char* str = va_arg(args, const char*);
+            const uchar* str = va_arg(args, const uchar*);
             buf.copy(str, str + strlen(str));
             break;
         }
-        /*case FMT_UEFI_STR: {
-            const uint16_t* str = va_arg(args, const uint16_t*);
-            buffer_copy_u16(&buf, str, str + u16strlen(str));
-            break;
-        }*/
+        case FMT_UEFI_STR: {
+            log_panic(g_EfiSystemTable, u"FMT_UEFI_STR not supported lmao\n");
+        }
         case FMT_CHAR: {
             int v = va_arg(args, int);
             buf.append(v);
@@ -424,9 +423,9 @@ int vsnprintf(uint16_t* writebuffer, size_t size, const char* fmt, va_list args)
     return (int)buf.count;
 }
 
-size_t strlen(const char* str)
+size_t strlen(const uchar* str)
 {
-    const char* pos = str;
+    const uchar* pos = str;
 
     while (*pos++)
         ;

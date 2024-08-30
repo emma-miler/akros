@@ -7,7 +7,7 @@
 class BasicLogger : public ILogger {
   public:
     BasicLogger(IOutputDevice& dev);
-    virtual void Info(const char* msg, ...);
+    virtual void Info(const uchar* msg, ...);
 
   private:
     IOutputDevice& _sink;

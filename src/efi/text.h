@@ -102,15 +102,20 @@
 #define EFI_BACKGROUND_LIGHTGRAY 0x70
 
 #define EFI_TEXT_ATTR(Foreground, Background) ((Foreground) | ((Background) << 4))
-
-struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL;
+#define EFI_SIMPLE_TEXT_INPUT_PROTOCOL_GUID                                            \
+    {                                                                                  \
+        0x387477c1, 0x69c7, 0x11d2, { 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b } \
+    }
 
 #include "../types.h"
 #include "types.h"
 
+struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL;
+
+
 typedef EFI_STATUS(EFIAPI* EFI_TEXT_RESET)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN bool ExtendedVerification);
-typedef EFI_STATUS(EFIAPI* EFI_TEXT_STRING)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN uint16_t* String);
-typedef EFI_STATUS(EFIAPI* EFI_TEXT_TEST_STRING)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN uint16_t* String);
+typedef EFI_STATUS(EFIAPI* EFI_TEXT_STRING)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN uchar* String);
+typedef EFI_STATUS(EFIAPI* EFI_TEXT_TEST_STRING)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN uchar* String);
 typedef EFI_STATUS(EFIAPI* EFI_TEXT_QUERY_MODE)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN UINTN ModeNumber, OUT UINTN* Columns, OUT UINTN* Rows);
 typedef EFI_STATUS(EFIAPI* EFI_TEXT_SET_MODE)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN UINTN ModeNumber);
 typedef EFI_STATUS(EFIAPI* EFI_TEXT_SET_ATTRIBUTE)(IN struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* This, IN UINTN Attribute);
@@ -139,5 +144,22 @@ typedef struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL {
     EFI_TEXT_ENABLE_CURSOR EnableCursor;
     SIMPLE_TEXT_OUTPUT_MODE* Mode;
 } EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL;
+
+
+typedef struct EFI_INPUT_KEY {
+    uint16_t ScanCode;
+    uchar UnicodeChar;
+} EFI_INPUT_KEY;
+
+struct EFI_SIMPLE_TEXT_INPUT_PROTOCOL;
+
+typedef EFI_STATUS(EFIAPI* EFI_INPUT_RESET)(IN struct EFI_SIMPLE_TEXT_INPUT_PROTOCOL* This, IN bool ExtendedVerification);
+typedef EFI_STATUS(EFIAPI* EFI_INPUT_READ_KEY)(IN struct EFI_SIMPLE_TEXT_INPUT_PROTOCOL* This, OUT EFI_INPUT_KEY* Key);
+
+typedef struct EFI_SIMPLE_TEXT_INPUT_PROTOCOL {
+    EFI_INPUT_RESET Reset;
+    EFI_INPUT_READ_KEY ReadKeyStroke;
+    EFI_EVENT WaitForKey;
+} EFI_SIMPLE_TEXT_INPUT_PROTOCOL;
 
 #endif // _EFI_STOP_H

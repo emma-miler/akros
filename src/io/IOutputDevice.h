@@ -3,5 +3,5 @@
 
 class IOutputDevice {
   public:
-    virtual int Write(uint16_t* message) = 0;
+    virtual int Write(uchar* message) = 0;
 };
