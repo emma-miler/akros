@@ -1,3 +1,3 @@
 cd ./src
 find -name '*.o' -exec rm {} \;
-make 
+USE_GCC=1 make 

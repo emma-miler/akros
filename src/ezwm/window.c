@@ -13,9 +13,8 @@ ezwm_window_t* ezwm_window_Create(rect_t rect, char* title)
     return window;
 }
 
-ezwm_window_singleton_t* ezwm_window_singleton_init()
+void ezwm_window_draw_decorations(ezwm_window_t* window, ads_session_t* session)
 {
-    ezwm_window_singleton_t* window = malloc(sizeof(ezwm_window_singleton_t));
-    IMPL(ezwm, window, Create)
-    return window;
+    ads_append_drawcall(session, drawcall_from_rect(new_rect_t(window->rect.x, window->rect.y - 20, window->rect.width, 20), 0xFF303060));
+    ads_append_drawcall(session, drawcall_from_label(new_label_t(window->rect.x + 2, window->rect.y - 5, window->title), 0xFFFFFFFF));
 }
