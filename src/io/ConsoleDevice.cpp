@@ -3,8 +3,9 @@
 #include "../efi.h"
 #include "../log.h"
 
-int ConsoleDevice::Write(uchar* message)
-{
-    g_EfiSystemTable->ConOut->OutputString(g_EfiSystemTable->ConOut, message);
-    return 0;
-}
+int ConsoleDevice::Write(const uchar* message) { return _out.Write(message); }
+
+int ConsoleDevice::ReadOne(OUT Keycode* keycode) { return _in.ReadOne(keycode); }
+
+void ConsoleDevice::ClearScreen() { return _out.ClearScreen(); }
+void ConsoleDevice::ClearLine() { return _out.ClearLine(); }

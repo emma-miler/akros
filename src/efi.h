@@ -10,6 +10,7 @@
 #ifndef _EFI_H
 #define _EFI_H
 
+#include "types.h"
 #include "efi/types.h"
 #include <stdint.h>
 
@@ -46,18 +47,6 @@
 #define EFI_WORD_SIZE 64
 #else
 #error "EFI_PLATFORM not defined."
-#endif
-
-#ifndef IN
-#define IN
-#endif
-
-#ifndef OUT
-#define OUT
-#endif
-
-#ifndef OPTIONAL
-#define OPTIONAL
 #endif
 
 #ifndef CONST

@@ -64,7 +64,7 @@ template <typename T> class Buffer {
             storage[count] = code;
         ++count;
     }
-    
+
     void copy(const uchar* begin, const uchar* end)
     {
         const size_t len = end - begin;
@@ -321,6 +321,15 @@ static int format_parse(const uchar* str, struct format* config)
     return 0;
 }
 #include "log.h"
+
+int snprintf(uchar* writebuffer, size_t size, const uchar* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    int ret = vsnprintf(writebuffer, size, fmt, args);
+    va_end(args);
+    return ret;
+}
 
 int vsnprintf(uchar* writebuffer, size_t size, const uchar* fmt, va_list args)
 {

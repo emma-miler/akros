@@ -11,7 +11,6 @@
 #define _EFI_LIP_H
 
 #include "../efi.h"
-#include "devicepath.h"
 
 #define EFI_LOADED_IMAGE_DEVICE_PATH_PROTOCOL_GUID                                     \
     {                                                                                  \

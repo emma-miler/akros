@@ -80,12 +80,12 @@ typedef struct EFI_FILE_IO_TOKEN {
 
 struct EFI_FILE_PROTOCOL;
 
-typedef EFI_STATUS(EFIAPI* EFI_FILE_OPEN)(IN struct EFI_FILE_PROTOCOL* This, OUT struct EFI_FILE_PROTOCOL** NewHandle, IN char16_t* FileName, IN uint64_t OpenMode, IN uint64_t Attributes);
+typedef EFI_STATUS(EFIAPI* EFI_FILE_OPEN)(IN struct EFI_FILE_PROTOCOL* This, OUT struct EFI_FILE_PROTOCOL** NewHandle, IN const char16_t* FileName, IN uint64_t OpenMode, IN uint64_t Attributes);
 typedef EFI_STATUS(EFIAPI* EFI_FILE_CLOSE)(IN struct EFI_FILE_PROTOCOL* This);
 typedef EFI_STATUS(EFIAPI* EFI_FILE_DELETE)(IN struct EFI_FILE_PROTOCOL* This);
 typedef EFI_STATUS(EFIAPI* EFI_FILE_READ)(IN struct EFI_FILE_PROTOCOL* This, IN OUT UINTN* BufferSize, OUT VOID* Buffer);
 typedef EFI_STATUS(EFIAPI* EFI_FILE_WRITE)(IN struct EFI_FILE_PROTOCOL* This, IN OUT UINTN* BufferSize, IN VOID* Buffer);
-typedef EFI_STATUS(EFIAPI* EFI_FILE_OPEN_EX)(IN struct EFI_FILE_PROTOCOL* This, OUT struct EFI_FILE_PROTOCOL** NewHandle, IN char16_t* FileName, IN uint64_t OpenMode, IN uint64_t Attributes, IN OUT EFI_FILE_IO_TOKEN* Token);
+typedef EFI_STATUS(EFIAPI* EFI_FILE_OPEN_EX)(IN struct EFI_FILE_PROTOCOL* This, OUT struct EFI_FILE_PROTOCOL** NewHandle, IN const char16_t* FileName, IN uint64_t OpenMode, IN uint64_t Attributes, IN OUT EFI_FILE_IO_TOKEN* Token);
 typedef EFI_STATUS(EFIAPI* EFI_FILE_READ_EX)(IN struct EFI_FILE_PROTOCOL* This, IN OUT EFI_FILE_IO_TOKEN* Token);
 typedef EFI_STATUS(EFIAPI* EFI_FILE_WRITE_EX)(IN struct EFI_FILE_PROTOCOL* This, IN OUT EFI_FILE_IO_TOKEN* Token);
 typedef EFI_STATUS(EFIAPI* EFI_FILE_FLUSH_EX)(IN struct EFI_FILE_PROTOCOL* This, IN EFI_FILE_IO_TOKEN* Token);

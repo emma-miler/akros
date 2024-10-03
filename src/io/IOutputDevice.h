@@ -3,5 +3,7 @@
 
 class IOutputDevice {
   public:
-    virtual int Write(uchar* message) = 0;
+    virtual int Write(const uchar* message) = 0;
+    virtual void ClearScreen() = 0;
+    virtual void ClearLine() = 0;
 };
